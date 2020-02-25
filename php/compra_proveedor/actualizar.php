@@ -1,17 +1,17 @@
 <?php
 session_start(); 
 $id = $_POST["id1"];
-$id_proveedor = $_POST["id_proveedor"];
-$fecha = $_POST["fecha"];
-$factura_compra = $_POST["factura_compra"];
-$id_producto = $_POST["id_producto"];
-$vl_costo = $_POST["vl_costo"];
-$iva = $_POST["iva"];
-$vl_venta = $_POST["vl_venta"];
-$cantidad = $_POST["cantidad"];
-$bodega = $_POST["bodega"];
+$id_proveedor = $_POST["id_proveedor1"];
+$fecha = $_POST["fecha1"];
+$factura_compra = $_POST["factura_compra1"];
+$id_producto = $_POST["id_producto1"];
+$vl_costo = $_POST["vl_costo1"];
+$iva = $_POST["iva1"];
+$vl_venta = $_POST["vl_venta1"];
+$cantidad = $_POST["cantidad1"];
+$bodega = $_POST["bodega1"];
 $user_id = $_SESSION["idUser"];
-$state = "1";
+$state = $_POST["state1"];
 
 $response = array();
 include '../../php/conexion.php';

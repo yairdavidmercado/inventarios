@@ -16,7 +16,7 @@ if ($cod == '1') {
 	$sql = "SELECT *, 
 	CAST(reg_date AS DATE) as fecha, 
 	((vl_costo*(CAST(iva AS DECIMAL(5,0))))/100) as total_iva,
-	IF((select sum(cantidad) FROM existencias WHERE id_producto = productos.id AND bodega = $parametro2 ) IS NULL, 0 ,(select sum(cantidad) FROM existencias WHERE id_producto = productos.id AND bodega = $parametro2 )-(IF ((SELECT SUM(cantidad) FROM detalle_factura WHERE id_producto = productos.id AND detalle_factura.state = 1 AND bodega = $parametro2) IS NULL, 0, (SELECT SUM(cantidad) FROM detalle_factura WHERE id_producto = productos.id AND detalle_factura.state = 1 AND bodega = $parametro2)))) as cantidad,
+	IF((select sum(cantidad) FROM existencias WHERE id_producto = productos.id AND bodega = $parametro2 ) IS NULL, 0 ,(select sum(cantidad) FROM existencias WHERE id_producto = productos.id AND bodega = $parametro2 )-(IF ((SELECT SUM(cantidad) FROM detalle_factura WHERE id_producto = productos.id AND detalle_factura.state = 1 AND bodega = $parametro2) IS NULL, 0, (SELECT SUM(cantidad) FROM detalle_factura WHERE id_producto = productos.id AND detalle_factura.state = 1 AND bodega = $parametro2))))+IF((select sum(cantidad) FROM compras WHERE id_producto = productos.id AND bodega = $parametro2 ) IS NULL, 0 ,(select sum(cantidad) FROM compras WHERE id_producto = productos.id AND bodega = $parametro2 )) as cantidad,
 	(vl_costo+((vl_costo*(CAST(iva AS DECIMAL(5,0))))/100)) as total_costo,
 	(SELECT TRIM(nombre) FROM categorias WHERE categorias.id = productos.id_categoria) as categoria,
 	(SELECT TRIM(nombre) FROM proveedors WHERE proveedors.id = productos.id_proveedor) as proveedor
@@ -67,7 +67,7 @@ if ($cod == '1') {
 	$sql = "SELECT *, 
 	CAST(reg_date AS DATE) as fecha, 
 	((vl_costo*(CAST(iva AS DECIMAL(5,0))))/100) as total_iva,
-	IF((select sum(cantidad) FROM existencias WHERE id_producto = productos.id AND bodega = $parametro2 ) IS NULL, 0 ,(select sum(cantidad) FROM existencias WHERE id_producto = productos.id AND bodega = $parametro2 )-(IF ((SELECT SUM(cantidad) FROM detalle_factura WHERE id_producto = productos.id AND detalle_factura.state = 1 AND bodega = $parametro2) IS NULL, 0, (SELECT SUM(cantidad) FROM detalle_factura WHERE id_producto = productos.id AND detalle_factura.state = 1 AND bodega = $parametro2)))) as cantidad,
+	IF((select sum(cantidad) FROM existencias WHERE id_producto = productos.id AND bodega = $parametro2 ) IS NULL, 0 ,(select sum(cantidad) FROM existencias WHERE id_producto = productos.id AND bodega = $parametro2 )-(IF ((SELECT SUM(cantidad) FROM detalle_factura WHERE id_producto = productos.id AND detalle_factura.state = 1 AND bodega = $parametro2) IS NULL, 0, (SELECT SUM(cantidad) FROM detalle_factura WHERE id_producto = productos.id AND detalle_factura.state = 1 AND bodega = $parametro2))))+IF((select sum(cantidad) FROM compras WHERE id_producto = productos.id AND bodega = $parametro2 ) IS NULL, 0 ,(select sum(cantidad) FROM compras WHERE id_producto = productos.id AND bodega = $parametro2 )) as cantidad,
 	(vl_costo+((vl_costo*(CAST(iva AS DECIMAL(5,0))))/100)) as total_costo,
 	(SELECT TRIM(nombre) FROM categorias WHERE categorias.id = productos.id_categoria) as categoria,
 	(SELECT TRIM(nombre) FROM proveedors WHERE proveedors.id = productos.id_proveedor) as proveedor 

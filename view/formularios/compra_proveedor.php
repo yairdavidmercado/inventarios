@@ -77,14 +77,14 @@ session_start();
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <select ref="select" required class="form-control form-control-sm id_proveedor" name="id_proveedor1">
+                                            <select ref="select" required class="form-control form-control-sm id_proveedor" id="id_proveedor1" name="id_proveedor1">
                                                 <option value="">Seleccione el proveedor</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <input class="form-control form-control-sm fecha" required name="fecha_venta1" type="text" placeholder="Fecha de venta">
+                                            <input class="form-control form-control-sm fecha" required name="fecha1" type="text" placeholder="Fecha de venta">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -234,17 +234,17 @@ session_start();
                             <li style="background-color: #f7f7f7" class="list-group-item d-flex justify-content-between lh-condensed">
                                 <form class="form" autocomplete="off">
                                     <div class="container">
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label style="font-size:12px; margin-bottom:-30px" for="">Subtotal</label>
-                                            <input disabled ref="nit" class="form-control form-control-sm" name="subtotal" type="text">
+                                            <input disabled ref="nit" class="form-control form-control-sm" id="totaliza_subtotal" type="text">
                                         </div>
                                         <div style="margin-top:-15px" class="form-group">
                                             <label style="font-size:12px; margin-bottom:-30px" for="">IVA</label>
-                                            <input disabled class="form-control form-control-sm" name="iva" type="text">
-                                        </div>
+                                            <input disabled class="form-control form-control-sm" id="totaliza_iva" type="text">
+                                        </div> -->
                                         <div style="margin-top:-15px" class="form-group">
                                             <label style="font-size:12px; margin-bottom:-30px" for="">Total</label>
-                                            <input disabled class="form-control form-control-sm" name="total_pagar" type="text">
+                                            <input disabled class="form-control form-control-sm" id="totaliza_total" type="text">
                                         </div>
                                     </div>
                                 </form>
@@ -263,19 +263,20 @@ session_start();
                         <table class="table" id="example" style="width:100%;font-size:11px">
                             <thead class="thead-light">
                                 <tr>
-                                    <th style="display:none" scope="col">Id</th>
-                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Id</th>
                                     <th scope="col">Valor costo</th>
                                     <th scope="col">Valor Venta</th>
                                     <th scope="col">IVA</th>
                                     <th scope="col">Total costo</th>
-                                    <th scope="col">Categoría</th>
+                                    <th scope="col"> Subtotal</th>
+                                    <th scope="col">Producto</th>
                                     <th scope="col">Proveedor</th>
                                     <th scope="col">Cantidad</th>
                                     <th scope="col">Fecha</th>
+                                    <th style="display:none" scope="col">id Proveedor</th>
+                                    <th style="display:none" scope="col">n_factura</th>
                                     <th style="display:none" scope="col">vl IVA</th>
                                     <th style="display:none" scope="col">id Categoría</th>
-                                    <th style="display:none" scope="col">id Proveedor</th>
                                     <th style="display:none" scope="col">Perfil</th>
                                     <th style="display:none" scope="col">Estado</th>
                                     <th scope="col">Bodega</th>
@@ -497,15 +498,14 @@ $(function() {
     function actualizar_compra_proveedors() {
       $.ajax({
         type : 'POST',
-        data: $("#form_actualizar").serialize(),
+        data: $("#form_actualizar").serialize()+"&bodega1="+$("#bodega").val(),
         url: '/inventarios/php/compra_proveedor/actualizar.php',
         success: function(respuesta) {
           let obj = JSON.parse(respuesta)
           if (obj.success) {
-            notificacion("El compra_proveedor ha sido actualizado exitosamente.", "success")
+            notificacion("La compra se ha sido actualizado exitosamente.", "success")
             //limpiar_form()
             Showcompra_proveedor($("#bodega").val())
-            $("input[name*='nit1']").focus()
           }else{
             alert('Datos invalidos para el acceso')
           }
@@ -535,26 +535,36 @@ $(function() {
         let obj = JSON.parse(respuesta)
         $("#example").dataTable().fnDestroy();
         let fila = ''
+        let total_costo = 0;
+        let total_iva = 0;
+        let total = 0;
         $.each(obj.resultado, function( index, val ) {
+            total_costo += parseInt(val.total_costo)
+            total_iva += parseInt(val.total_iva)
+            total += parseInt(val.total)
             fila += '<tr>'+
-                        '<td style="display:none">'+val.id+'</td>'+
                         '<td>'+val.id+'</td>'+
                         '<td>'+parseInt(val.vl_costo).toFixed(0)+'</td>'+
                         '<td>'+parseInt(val.vl_venta).toFixed(0)+'</td>'+
                         '<td>'+parseInt(val.total_iva).toFixed(0)+'</td>'+
                         '<td>'+parseInt(val.total_costo).toFixed(0)+'</td>'+
+                        '<td>'+parseInt(val.total).toFixed(0)+'</td>'+
                         '<td>'+val.producto+'</td>'+
                         '<td>'+val.proveedor+'</td>'+
                         '<td>'+val.cantidad+'</td>'+
                         '<td>'+val.fecha+'</td>'+
-                        '<td style="display:none">'+val.iva+'</td>'+
-                        '<td style="display:none">'+val.id_producto+'</td>'+
+                        '<td>'+val.bodegas+'</td>'+
                         '<td style="display:none">'+val.id_proveedor+'</td>'+
+                        '<td style="display:none">'+val.n_factura+'</td>'+
+                        '<td style="display:none">'+val.id_producto+'</td>'+
+                        '<td style="display:none">'+val.iva+'</td>'+
                         '<td style="display:none">'+val.perfil+'</td>'+
                         '<td style="display:none">'+val.state+'</td>'+
-                        '<td>'+val.bodegas+'</td>'+
                         '<td class="editar"><button class="btn btn-warning btn-sm" onclick="ver_editar()" >Editar</button></td>'+
                     '</tr>'
+            $('#totaliza_subtotal').val(parseInt(total_costo).toFixed(0))
+            $('#totaliza_iva').val(parseInt(total_iva).toFixed(0))
+            $('#totaliza_total').val(format_number(parseInt(total).toFixed(0)))
         });
         $("#tbodytable").html(fila)
         $('#example').DataTable({
@@ -570,16 +580,17 @@ $(function() {
                 $(this).parents("tr").find("td").each(function(){
                     valores.push($(this).html());
                 });
-                $("input[name*='nombre1']").focus()
                 $("input[name*='id1']").val(valores[0])
-                $("input[name*='nombre1']").val(valores[1])
-                $("input[name*='vl_costo1']").val(valores[2])
-                $("input[name*='vl_venta1']").val(valores[3])
-                $("input[name*='iva1']").val(valores[10])
-                $("select[name*='id_categoria1']").val(valores[11])
-                $("select[name*='id_proveedor1']").val(valores[12])
-                $("select[name*='perfil1']").val(valores[13])
-                $("select[name*='state1']").val(valores[14])
+                $("#id_proveedor1").val(valores[11])
+                $("input[name*='factura_compra1']").val(valores[12])
+                $("#id_producto1").val(valores[13])
+                $('#id_producto1').trigger('change');
+                $("input[name*='vl_costo1']").val(valores[1])
+                $("input[name*='vl_venta1']").val(valores[2])
+                $("input[name*='cantidad1']").val(valores[8])
+                $("input[name*='fecha1']").val(valores[9])
+                $("input[name*='iva1']").val(valores[14])
+                $("select[name*='state1']").val(valores[16])
                 calcular()
             })
         
@@ -605,12 +616,11 @@ $(function() {
   }
 
     function limpiar_form() {
-            $("input[name*='nombre1']").val("")
+            $("input[name*='id_proveedor1']").val("")
             $("input[name*='vl_costo1']").val("")
             $("input[name*='vl_venta1']").val("")
             $("input[name*='iva1']").val("19")
-            $("select[name*='id_categoria1']").val("")
-            $("select[name*='id_proveedor1']").val("")
+            $("select[name*='id_producto1']").val("")
             $("select[name*='perfil1']").val("")
             $("select[name*='state1']").val("")
     }
