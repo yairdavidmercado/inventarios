@@ -68,8 +68,10 @@ if ($cod == '1') {
     }
     //termina cod 1
 }elseif ($cod == '3') {
-    $sql = "SELECT *, (SELECT iva FROM productos WHERE productos.id = detalle_pedido.id_producto) AS iva, (SELECT nombre FROM productos WHERE productos.id = detalle_pedido.id_producto) AS nombre_producto, CAST(reg_date AS DATE) as fecha 
-    FROM detalle_pedido WHERE id_orden_pedidos = $parametro1 AND state = $parametro2 order by id desc;";
+    $sql = "SELECT *,
+    IF((select sum(existencias.cantidad) FROM existencias WHERE existencias.id_producto = detalle_despacho_temp.id_producto AND existencias.bodega = $parametro3 ) IS NULL, 0 ,(select sum(existencias.cantidad) FROM existencias WHERE existencias.id_producto = detalle_despacho_temp.id_producto AND existencias.bodega = $parametro3 )-(IF ((SELECT SUM(detalle_factura.cantidad) FROM detalle_factura WHERE detalle_factura.id_producto = detalle_despacho_temp.id_producto AND detalle_factura.state = $parametro2 AND detalle_factura.bodega = $parametro3) IS NULL, 0, (SELECT SUM(detalle_factura.cantidad) FROM detalle_factura WHERE detalle_factura.id_producto = detalle_despacho_temp.id_producto AND detalle_factura.state = $parametro2 AND detalle_factura.bodega = $parametro3)))) as existencias, 
+    (SELECT iva FROM productos WHERE productos.id = detalle_despacho_temp.id_producto) AS iva, (SELECT nombre FROM productos WHERE productos.id = detalle_despacho_temp.id_producto) AS nombre_producto, CAST(reg_date AS DATE) as fecha 
+    FROM detalle_despacho_temp WHERE id_orden_pedidos = $parametro1 AND state = $parametro2 order by id desc;";
     $result = $conn->query($sql);
     // output data of each row
     $response["resultado"] = array();

@@ -51,7 +51,7 @@ session_start();
 <main role="main" class="container py-5">
   <div class="py-2 bg-white rounded shadow-sm">
     <div class="container">
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-sm-3">
                 <div class="form-group">
                     <select ref="select" onchange="buscar_productos(this.vale)" class="form-control form-control-sm id_bodegas" id="bodega" name="bodega">
@@ -59,7 +59,7 @@ session_start();
                     </select>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="row">
             <div class="col-sm-9">
                 <div class="card">
@@ -76,7 +76,7 @@ session_start();
                                             <div class="form-group col-sm-6">
                                                 <label style="font-size:14px" for="">Producto</label>
                                                 <br>
-                                                <select onchange="productos_detalle(this.value, $('#bodega').val())" style="width:100%" required class="form-control select2-single id_producto" name="id_producto" id="id_producto">
+                                                <select onchange="productos_detalle(this.value, 0);$('#cantidad').val('')" style="width:100%" required class="form-control select2-single id_producto" name="id_producto" id="id_producto">
                                                     <option value="">Seleccione el producto</option>
                                                 </select>
                                             </div>
@@ -120,7 +120,7 @@ session_start();
                             <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label style="font-size:14px" for="">Fecha de pedido</label>
-                                    <input class="form-control form-control-sm fecha" required name="fecha_venta" type="text" placeholder="Fecha de venta">
+                                    <input class="form-control form-control-sm fecha" required name="fecha_venta" type="text" placeholder="Fecha de pedido">
                                 </div>
                                 <div class="col-sm-9" style="display:none">
                                     <label style="font-size:14px; margin-top:-1px;" for="">Tipo de venta</label>
@@ -156,10 +156,10 @@ session_start();
                         <ul class="list-group mb-3">
                             <li class="list-group-item d-flex justify-content-between lh-condensed">
                                 <div class="text-success">
-                                    <h6 class="my-0" style="font-size:12px">Existencia actual del producto seleccionado</h6>
+                                    <h6 class="my-0" style="font-size:12px">Precio de costo del producto seleccionado</h6>
                                     <small id="vl_costo" class="text-muted"></small>
                                 </div>
-                                <span class="text-muted" id="existencias"></span>
+                                <!-- <span class="text-muted" id="existencias"></span> -->
                             </li>
                             <li style="background-color: #f7f7f7" class="list-group-item d-flex justify-content-between lh-condensed">
                                 <form class="form" id="form_guardar" role="form" methods="POST" onsubmit="event.preventDefault(); return guardar_venta();" autocomplete="off">
@@ -203,7 +203,7 @@ session_start();
 <script>
 $(function() {
         permisos("orden_pedido")
-        buscar_bodegas()
+        //buscar_bodegas()
         Showventa()
         buscar_productos()
         datos_clientes('0')
@@ -216,19 +216,15 @@ $(function() {
         });
   });
   function guardar_detalle_pedido() {
-        if ($("#bodega").val() == 0) {
-            notificacion("Por favor seleccione la bodega.", "danger")
-            $("#bodega").focus()
-            return false
-        }
-        productos_detalle($("#id_producto").val(), $("#bodega").val())
+        
+        productos_detalle($("#id_producto").val(), 0)
         // if(parseInt($("#existencias").text()) < parseInt($("#cantidad").val())){
         //         notificacion("la cantidad establecida no puede superar a la existencia actual del producto")
         //         return false
         // }
       $.ajax({
         type : 'POST',
-        data: $("#form_detalle_orden").serialize()+"&bodega="+$("#bodega").val(),
+        data: $("#form_detalle_orden").serialize()+"&bodega="+0,
         url: '/inventarios/php/orden_pedidos/guardar_detalle_pedido.php',
         success: function(respuesta) {
           let obj = JSON.parse(respuesta)
@@ -316,7 +312,9 @@ $(function() {
         $("input[name*='total_pagar']").val(parseFloat(parseFloat(total_iva)+parseFloat(sub_total)).toFixed(2))
         $("#tbodytable").html(fila)
         $('#example').DataTable({
-            "ordering": false
+            "ordering": false,
+            "paging": false,
+            "searching": false
         });
 
         $(".editar").click(function() {
@@ -346,16 +344,11 @@ $(function() {
   }
 
   function guardar_orden_pedidos() {
-      if ($("#bodega").val() == 0) {
-        notificacion("Por favor seleccione la bodega.", "danger")
-        $("#bodega").focus()
-        return false
-      }
     let productos = []
     $(".id_productos").each(function(){
         productos.push($(this).text())
     });
-    let values = $("#form_orden").serialize() + "&iva_factu="+$("input[name*='iva']").val()+"&subtotal_factu="+$("input[name*='subtotal']").val()+"&valor_factu="+$("input[name*='total_pagar']").val()+"&id_productos="+productos.toString()+"&bodega="+$("#bodega").val()
+    let values = $("#form_orden").serialize() + "&iva_factu="+$("input[name*='iva']").val()+"&subtotal_factu="+$("input[name*='subtotal']").val()+"&valor_factu="+$("input[name*='total_pagar']").val()+"&id_productos="+productos.toString()+"&bodega="+0
             console.log(values)
     
     if (productos.length == 0) {
