@@ -72,14 +72,12 @@ session_start();
                                 <table class="table" id="example" style="width:100%;font-size:11px">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th style="width:10px" scope="col">Detalle</th>
                                             <th scope="col">Id</th>
                                             <th scope="col">Nombre</th>
                                             <th scope="col">Total pedido</th>
                                             <th scope="col">Tipo</th>
                                             <th scope="col">Vendedor</th>
                                             <th scope="col">Fecha</th>
-                                            <th style="width:10px"></th>
                                             <th style="width:10px"></th>
                                         </tr>
                                     </thead>
@@ -98,7 +96,6 @@ session_start();
                                 <table class="table" id="example1" style="width:100%;font-size:11px">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th style="width:10px" scope="col">Detalle</th>
                                             <th scope="col">Id</th>
                                             <th scope="col">Nombre</th>
                                             <th scope="col">Total pedido</th>
@@ -116,63 +113,7 @@ session_start();
                     </div>
                 </div> 
             </div>
-            <div id="ver_credito" style="display:none" class="col-sm-12 py-4">
-                <!-- form user info -->
-                <div id="ver_editar" class="card">
-                    <div class="card-header">
-                    <button class="btn btn-success btn-sm float-right" onclick="btn_guardar()">Guardar</button>
-                        <h5 class="mb-0">Abonar a orden</h5>
-                    </div>
-                    <div class="card-body">
-                        <form name="editar_orden" class="form" role="form" id="form_actualizar" role="form" onsubmit="event.preventDefault(); return guardar_abono();" autocomplete="off">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <div class="form-group">
-                                            <input maxlength="255" ref="id" required disabled class="form-control form-control-sm" id="id1" name="id1" type="text" placeholder="id">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <input maxlength="255" ref="nombre" required disabled class="form-control form-control-sm" name="nombre1" type="text" placeholder="Nombre">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <input maxlength="20" class="form-control form-control-sm" required name="vl_abono1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" type="text" placeholder="Valor del abono">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="display:none" class="form-group">
-                                <button class="btn btn-success btn-sm float-right" id="submit_guardar" type="submit">Guardar</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- /form user info -->
-                <div id="ver_editar" class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Abonos realizados</h5>
-                    </div>
-                    <div class="card-body table-responsive">
-                        <table class="table" style="width:100%;font-size:11px">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th scope="col">Id</th>
-                                    <th scope="col">Valor abono</th>
-                                    <th scope="col">Fecha</th>
-                                    <th style="width:10px" scope="col">Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyabono">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="col-sm-12">
+            <div id="grid_detalle_orden" class="col-sm-12">
                 <!-- /form user info -->
                 <div class="card">
                     <div class="card-header">
@@ -190,7 +131,6 @@ session_start();
                                     <th scope="col">IVA</th>
                                     <th scope="col">Subtotal</th>
                                     <th scope="col">Total</th>
-                                    <th style="width:10px"></th>
                                 </tr>
                             </thead>
                             <tbody id="tbodydetalle_orden">
@@ -209,10 +149,29 @@ session_start();
                         <div class="container">
                             <div class="row">
                                 <div class="col-sm-6 mb-3">
+                                    <label for="">Bodegas</label>
                                     <div class="form-group">
                                         <select ref="select" onchange="Showdetalle_despacho($('#text_id_despacho').text())" class="form-control form-control-sm id_bodegas" id="bodega" name="bodega">
                                             <option value="">Seleccione el bodegas</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 mb-3">
+                                    <label for="">IVA</label>
+                                    <div class="form-group">
+                                        <input id="iva_total_despacho" disabled class="form-control input-xs" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 mb-3">
+                                    <label for="">Subtotal</label>
+                                    <div class="form-group">
+                                        <input id="sub_total_despacho" disabled class="form-control input-xs" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 mb-3">
+                                    <label for="">Total</label>
+                                    <div class="form-group">
+                                        <input id="suma_total_despacho" disabled class="form-control input-xs" />
                                     </div>
                                 </div>
                                 <div style="margin-top:-20px;" class="col-sm-12 mb-3">
@@ -298,6 +257,8 @@ session_start();
                                     </div>
                                 </div>
                             </div>
+                            <br>
+                            <button type="submit" onclick="despachar($('#text_id_despacho').text())" class="btn btn-primary float-right">Despachar pedido</button>
                         </div>
                     </div>
                 </div>
@@ -353,6 +314,7 @@ $(function() {
     }
 
     function Showdetalle_despacho(orden) {
+        Showdetalle_pedidos(orden) 
         $('#text_id_despacho').text(orden)
         let values = { 
             cod: "3",
@@ -373,9 +335,14 @@ $(function() {
         let fila = ''
         let total_iva = 0
         let sub_total = 0
+        let total = 0
         $.each(obj.resultado, function( index, val ) {
             total_iva += (parseInt(val.iva)*parseInt(val.cantidad)*(val.vl_venta))/100
             sub_total += parseInt(val.cantidad)*(val.vl_venta)-((parseInt(val.iva)*parseInt(val.cantidad)*(val.vl_venta))/100)
+            total += parseInt(val.cantidad)*(val.vl_venta)
+            $("#iva_total_despacho").val(total_iva)
+            $("#sub_total_despacho").val(sub_total)
+            $("#suma_total_despacho").val(total)
             let color_danger = ''
             if (parseInt(val.cantidad) > parseInt(val.existencias)) {
                 color_danger = 'bg-danger'
@@ -406,6 +373,11 @@ $(function() {
     
   }
     function despachar(id) {
+        if ($("#bodega").val() == 0) {
+            notificacion("Por favor seleccione la bodega.", "danger")
+            $("#bodega").focus()
+            return false
+        }
         $.confirm({
             title: 'Atención!',
             content: '¿ Estas seguro de que quieres despachar el pedido número '+id+' ?',
@@ -413,13 +385,15 @@ $(function() {
                 confirm: function () {
                     $.ajax({
                         type : 'POST',
-                        data: "id="+id+"&tipo_venta="+$("input[name^=tipo_venta]:checked").val()+"&bodega="+0,
+                        data: "id="+id+"&total="+$("#suma_total_despacho").val()+"&sub_total="+$("#sub_total_despacho").val()+"&iva="+$("#iva_total_despacho").val()+"&tipo_venta="+$("input[name^=tipo_venta]:checked").val()+"&bodega="+$("#bodega").val(),
                         url: '/inventarios/php/ver_orden_pedidos/guardar_despacho.php',
                         success: function(respuesta) {
                         let obj = JSON.parse(respuesta)
                         if (obj.success) {
                             if (obj.numero > 0) {
                                 notificacion("La orden se ha despachado correctamente.", "success")
+                                $('#detalle_despacho_temp').css("display","none")
+                                $('#grid_detalle_orden').css("display","none")
                                 ShowPedidos(0)   
                             }else{
                                 notificacion("No se puede realizar el despacho, por que la orden tiene un producto o varios productos que la cantidad ordenada supera las existencias en bodega.", "success")
@@ -474,14 +448,12 @@ $(function() {
             //     btn_despacho = ''
             // }
             fila += '<tr class="'+color_danger+'">'+
-                        '<td onclick="Showdetalle_pedidos('+val.id+')" class="editar"><h6><span style="cursor:pointer" class="badge badge-info"><i class="fa fa-eye"></i></span></h6></td>'+
                         '<td>'+val.id+'</td>'+
                         '<td>'+val.nombre+'</td>'+
                         '<td>'+parseInt(val.valor_factu).toFixed(0)+'</td>'+
                         '<td><span class="text-uppercase">'+val.tipo_venta+'</span></td>'+
                         '<td>'+val.usuario_crea+'</td>'+
                         '<td>'+val.fecha+'</td>'+
-                        '<td onclick="eliminar_pedido('+val.id+')"><a style="cursor:pointer" ><i style="font-size:11px" class="fa fa-window-close"></i></a></td>'+
                         btn_despacho+
                     '</tr>'
         });
@@ -520,7 +492,6 @@ $(function() {
         let fila = ''
         $.each(obj.resultado, function( index, val ) {
             fila += '<tr>'+
-            '<td onclick="Showdetalle_pedidos('+val.id+')" class="editar"><h6><span style="cursor:pointer" class="badge badge-info"><i class="fa fa-eye"></i></span></h6></td>'+
                         '<td>'+val.id+'</td>'+
                         '<td>'+val.nombre+'</td>'+
                         '<td>'+parseInt(val.valor_factu).toFixed(0)+'</td>'+
@@ -577,7 +548,6 @@ $(function() {
                         '<td>'+parseFloat((parseInt(val.iva)*parseInt(val.cantidad)*(val.vl_venta))/100).toFixed(2)+'</td>'+
                         '<td>'+parseFloat(parseInt(val.cantidad)*(val.vl_venta)-((parseInt(val.iva)*parseInt(val.cantidad)*(val.vl_venta))/100)).toFixed(2)+'</td>'+
                         '<td>'+parseFloat(parseInt(val.cantidad)*(val.vl_venta)).toFixed(2)+'</td>'+
-                        '<td class="borrar"><a style="cursor:pointer" onclick="eliminar_pedido('+val.id+')" ><i style="font-size:11px" class="fa fa-window-close"></i></a></td>'+
                     '</tr>'
         });
         $("#tbodydetalle_orden").html(fila)
@@ -616,49 +586,6 @@ $(function() {
         $(".editar").click()
         $("#ver_editar").css("display", "block")
         $("#ver_guardar").css("display", "none")
-    }
-
-    function eliminar_pedido(id) {
-        $.confirm({
-            title: 'Atención!',
-            content: '¿ Estas seguro de que quieres eliminar el pedido número '+id+' ?',
-            buttons: {
-                confirm: function () {
-                    if ($("#bodega").val() == 0) {
-                        notificacion("Por favor seleccione la bodega.", "danger")
-                        $("#bodega").focus()
-                        return false
-                    }
-                    let values = {
-                        id_orden: id,
-                        tipo_venta: 'pedido',
-                        bodega: $("#bodega").val()
-                    }
-                    $.ajax({
-                        type : 'POST',
-                        data: values,
-                        url: '/inventarios/php/ver_orden_pedidos/eliminar.php',
-                        success: function(respuesta) {
-                        let obj = JSON.parse(respuesta)
-                        if (obj.numero == 1) {
-                            //$.alert('Confirmed!');
-                            notificacion("el producto se ha eliminado exitosamente.", "success")
-                            //limpiar_form()
-                            ShowPedidos($("#bodega").val())
-                        }else{
-                            notificacion("El producto no se encuentra en la base de datos, por favor actualice la página.", "danger")
-                        }
-                        },
-                        error: function() {
-                        console.log("No se ha podido obtener la información");
-                        }
-                    });
-                },
-                cancel: function () {
-                    //$.alert('Canceled!');
-                }
-            }
-        });
     }
 
     function eliminar_detalle_despacho(id) {

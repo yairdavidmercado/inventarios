@@ -51,12 +51,12 @@ session_start();
     <div class="row">
             <div class="col-sm-3">
                 <!-- form user info -->
-                <div id="ver_editar" style="display:none" class="card">
+                <div id="ver_editar_categoria" style="display:none" class="card">
                     <div class="card-header">
                         <h5 class="mb-0">Editar categoria</h5>
                     </div>
                     <div class="card-body">
-                        <form class="form" id="form_actualizar" role="form" onsubmit="event.preventDefault(); return actualizar_categoria();" autocomplete="off">
+                        <form class="form" id="form_actualizar_categoria" role="form" onsubmit="event.preventDefault(); return actualizar_categoria();" autocomplete="off">
                             <div class="container">
                             <div style="display:none" class="form-group">
                                     <input class="form-control form-control-sm" name="id1" type="text" placeholder="identificación">
@@ -84,7 +84,7 @@ session_start();
                         <h5 class="mb-0">Crear categoría</h5>
                     </div>
                     <div class="card-body">
-                        <form class="form" id="form_guardar" role="form" methods="POST" onsubmit="event.preventDefault(); return guardar_categoria();" autocomplete="off">
+                        <form class="form" id="form_guardar_categoria" role="form" methods="POST" onsubmit="event.preventDefault(); return guardar_categoria();" autocomplete="off">
                             <div class="container">
                                 <div class="form-group">
                                     <input class="form-control form-control-sm" required name="nombre" type="text" placeholder="Nombre">
@@ -105,7 +105,7 @@ session_start();
                         <h5 class="mb-0">categoría</h5>
                     </div>
                     <div class="card-body table-responsive">
-                        <table class="table" id="example" style="width:100%; font-size:11px">
+                        <table class="table" id="example_categoria" style="width:100%; font-size:11px">
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">id</th>
@@ -115,7 +115,7 @@ session_start();
                                     <th style="width:10px" scope="col"></th>
                                 </tr>
                             </thead>
-                            <tbody id="tbodytable">
+                            <tbody id="tbodytable_categoria">
 
                             </tbody>
                         </table>
@@ -142,7 +142,7 @@ $(function() {
   function guardar_categoria() {
       $.ajax({
         type : 'POST',
-        data: $("#form_guardar").serialize(),
+        data: $("#form_guardar_categoria").serialize(),
         url: '/inventarios/php/categoria/guardar.php',
         success: function(respuesta) {
           let obj = JSON.parse(respuesta)
@@ -165,7 +165,7 @@ $(function() {
     function actualizar_categoria() {
       $.ajax({
         type : 'POST',
-        data: $("#form_actualizar").serialize(),
+        data: $("#form_actualizar_categoria").serialize(),
         url: '/inventarios/php/categoria/actualizar.php',
         success: function(respuesta) {
           let obj = JSON.parse(respuesta)
@@ -200,7 +200,7 @@ $(function() {
         success: function(respuesta) {
         //$(".loader").css("display", "none")
         let obj = JSON.parse(respuesta)
-        $("#example").dataTable().fnDestroy();
+        $("#example_categoria").dataTable().fnDestroy();
         let fila = ''
         $.each(obj.resultado, function( index, val ) {
             fila += '<tr>'+
@@ -208,11 +208,11 @@ $(function() {
                         '<td>'+val.nombre+'</td>'+
                         '<td>'+val.state+'</td>'+
                         '<td>'+val.reg_date+'</td>'+
-                        '<td class="editar"><button class="btn btn-warning btn-sm" onclick="ver_editar()" >Editar</button></td>'+
+                        '<td class="editar"><button class="btn btn-warning btn-sm" onclick="ver_editar_categoria()" >Editar</button></td>'+
                     '</tr>'
         });
-        $("#tbodytable").html(fila)
-        $('#example').DataTable({
+        $("#tbodytable_categoria").html(fila)
+        $('#example_categoria').DataTable({
             "ordering": false,
             "paging": false
         });
@@ -229,7 +229,7 @@ $(function() {
             $("input[name*='nombre1']").val(valores[1])
             $("select[name*='state1']").val(valores[2])
         })
-            //$('#example').DataTable().ajax.reload();
+            //$('#example_categoria').DataTable().ajax.reload();
         },
         error: function() {
         //$(".loader").css("display", "")
@@ -245,12 +245,12 @@ $(function() {
 
     function ver_guardar() {
         $("#ver_guardar").css("display", "block")
-        $("#ver_editar").css("display", "none")
+        $("#ver_editar_categoria").css("display", "none")
     }
 
-    function ver_editar() {
+    function ver_editar_categoria() {
         $(".editar").click()
-        $("#ver_editar").css("display", "block")
+        $("#ver_editar_categoria").css("display", "block")
         $("#ver_guardar").css("display", "none")
     }
 </script>

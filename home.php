@@ -91,7 +91,7 @@ session_start();
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                  <a  href="view/formularios/venta.php" class="btn btn-sm" style="background-color: #6c63ff; color:#fff">Nueva venta</a>
+                  <a  href="view/formularios/venta.php" class="btn btn-sm" style="background-color: #6c63ff; color:#fff">Venta directa</a>
                 </div>
                 <!-- <small class="text-muted">9 mins</small> -->
               </div>
@@ -152,7 +152,7 @@ session_start();
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                  <a  href="view/formularios/producto.php" class="btn btn-sm" style="background-color: #6c63ff; color:#fff">Registrar productos</a>
+                  <a  href="view/formularios/producto.php" class="btn btn-sm" style="background-color: #6c63ff; color:#fff">Inventario</a>
                 </div>
               </div>
             </div>

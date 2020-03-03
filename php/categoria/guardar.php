@@ -1,6 +1,6 @@
 <?php
-session_start(); 
-$nombre = $_POST["nombre"];
+session_start();
+$nombre = utf8_decode($_POST["nombre_categoria"]);
 $user_id = $_SESSION["idUser"];
 $state = "1";
 

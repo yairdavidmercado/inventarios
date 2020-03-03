@@ -1,9 +1,9 @@
 <?php
-session_start(); 
-$id = $_POST["id1"];
-$nombre = $_POST["nombre1"];
+session_start();
+$id = $_POST["id1_categoria"];
+$nombre = utf8_decode($_POST["nombre1_categoria"]);
 $user_id = $_SESSION["idUser"];
-$state = $_POST["state1"];
+$state = $_POST["state1_categoria"];
 
 $response = array();
 include '../../php/conexion.php';
